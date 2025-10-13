@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Aluno - 3° TDS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #00ff40, #0099ff);
+            color: white;
+            padding: 25px 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-content h1 {
+            margin: 0;
+            color: white;
+            font-size: 2.2em;
+        }
+
+        .header-content p {
+            margin: 8px 0 0 0;
+            color: #fdc6c1;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #05d9ff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-logout {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .main-content {
+            padding: 30px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, #030303, #0379ff);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .welcome-banner h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .student-info {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .info-value {
+            color: #030303;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .grades-preview {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .grades-preview h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.4em;
+        }
+
+        .grade-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+            transition: background 0.3s;
+        }
+
+        .grade-item:hover {
+            background: #f8f9fa;
+        }
+
+        .grade-item:last-child {
+            border-bottom: none;
+        }
+
+        .grade-disciplina {
+            font-weight: 600;
+            color: #2c3e50;
+            flex: 2;
+        }
+
+        .grade-nota {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .nota-aprovado { 
+            background: #d4edda; 
+            color: #155724; 
+        }
+
+        .nota-recuperacao { 
+            background: #fff3cd; 
+            color: #856404; 
+        }
+
+        .nota-reprovado { 
+            background: #f8d7da; 
+            color: #721c24; 
+        }
+
+        .sidebar-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .atividade-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .atividade-item:last-child {
+            border-bottom: none;
+        }
+
+        .atividade-info {
+            flex: 1;
+        }
+
+        .atividade-nome {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.9em;
+        }
+
+        .atividade-disciplina {
+            color: #7f8c8d;
+            font-size: 0.8em;
+        }
+
+        .atividade-prazo {
+            text-align: right;
+        }
+
+        .prazo-data {
+            font-size: 0.8em;
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .prazo-status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 600;
+        }
+
+        .status-pendente { background: #fff3cd; color: #856404; }
+        .status-entregue { background: #d4edda; color: #155724; }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .menu-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 25px 20px;
+            text-decoration: none;
+            color: #333;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 140px;
+            justify-content: center;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            border-color: #e74c3c;
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.15);
+        }
+
+        .menu-card .icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .menu-card h3 {
+            font-size: 1.2em;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .menu-card p {
+            color: #7f8c8d;
+            font-size: 0.85em;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .progress-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .progress-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .progress-card {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .progress-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .progress-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 5px;
+        }
+
+        .progress-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        footer p {
+            margin: 0;
+            color: #bdc3c7;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 10000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-weight: 500;
+            color: white;
+            background: #27ae60;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div>
+                <h1>🎓 Painel do Aluno</h1>
+                <p id="userWelcome">3° TDS - Período Matutino</p>
+            </div>
+            <div>
+                <button onclick="logout()" class="btn btn-logout">🚪 Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="welcome-banner">
+            <h2 id="studentName">Bem-vindo, Aluno!</h2>
+            <p>Acompanhe seu desempenho acadêmico em tempo real</p>
+        </div>
+
+        <div class="student-info">
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Matrícula</div>
+                    <div class="info-value" id="studentMatricula">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Turma</div>
+                    <div class="info-value">3° TDS</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Período</div>
+                    <div class="info-value">Matutino</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Professor</div>
+                    <div class="info-value">Helcio Soares Padilha</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-section">
+            <h3>📊 Meu Desempenho</h3>
+            <div class="progress-grid">
+                <div class="progress-card">
+                    <div class="progress-icon">📈</div>
+                    <div class="progress-value" id="mediaGeral">-</div>
+                    <div class="progress-label">Média Geral</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-icon">✅</div>
+                    <div class="progress-value" id="frequencia">-</div>
+                    <div class="progress-label">Frequência</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-icon">📚</div>
+                    <div class="progress-value" id="disciplinasAprovadas">-</div>
+                    <div class="progress-label">Disciplinas Aprovadas</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-icon">🎯</div>
+                    <div class="progress-value" id="atividadesEntregues">-</div>
+                    <div class="progress-label">Atividades Entregues</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="grades-preview">
+                <h3>📖 Minhas Notas por Disciplina</h3>
+                <div class="grade-item">
+                    <span class="grade-disciplina">Desenvolvimento Web</span>
+                    <span class="grade-nota nota-aprovado">8.4</span>
+                </div>
+                <div class="grade-item">
+                    <span class="grade-disciplina">Banco de Dados</span>
+                    <span class="grade-nota nota-aprovado">7.5</span>
+                </div>
+                <div class="grade-item">
+                    <span class="grade-disciplina">Programação Mobile</span>
+                    <span class="grade-nota nota-aprovado">8.9</span>
+                </div>
+                <div class="grade-item">
+                    <span class="grade-disciplina">Redes de Computadores</span>
+                    <span class="grade-nota nota-recuperacao">6.4</span>
+                </div>
+                <div class="grade-item">
+                    <span class="grade-disciplina">Engenharia de Software</span>
+                    <span class="grade-nota nota-aprovado">7.9</span>
+                </div>
+            </div>
+
+            <div class="sidebar-cards">
+                <div class="sidebar-card">
+                    <h4>📝 Próximas Atividades</h4>
+                    <div class="atividade-item">
+                        <div class="atividade-info">
+                            <div class="atividade-nome">Projeto Site Institucional</div>
+                            <div class="atividade-disciplina">Desenvolvimento Web</div>
+                        </div>
+                        <div class="atividade-prazo">
+                            <div class="prazo-data">10/04</div>
+                            <span class="prazo-status status-pendente">Pendente</span>
+                        </div>
+                    </div>
+                    <div class="atividade-item">
+                        <div class="atividade-info">
+                            <div class="atividade-nome">Modelagem Banco</div>
+                            <div class="atividade-disciplina">Banco de Dados</div>
+                        </div>
+                        <div class="atividade-prazo">
+                            <div class="prazo-data">05/04</div>
+                            <span class="prazo-status status-pendente">Pendente</span>
+                        </div>
+                    </div>
+                    <div class="atividade-item">
+                        <div class="atividade-info">
+                            <div class="atividade-nome">App Lista Tarefas</div>
+                            <div class="atividade-disciplina">Programação Mobile</div>
+                        </div>
+                        <div class="atividade-prazo">
+                            <div class="prazo-data">28/03</div>
+                            <span class="prazo-status status-pendente">Entregue</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
+                    <h4>📅 Próximos Eventos</h4>
+                    <div class="atividade-item">
+                        <div class="atividade-info">
+                            <div class="atividade-nome">Prova Bimestral</div>
+                            <div class="atividade-disciplina">Redes de Computadores</div>
+                        </div>
+                        <div class="prazo-data">15/04</div>
+                    </div>
+                    <div class="atividade-item">
+                        <div class="atividade-info">
+                            <div class="atividade-nome">Entrega de Trabalho</div>
+                            <div class="atividade-disciplina">Engenharia de Software</div>
+                        </div>
+                        <div class="prazo-data">20/04</div>
+                    </div>
+                    <div class="atividade-item">
+                        <div class="atividade-info">
+                            <div class="atividade-nome">Apresentação</div>
+                            <div class="atividade-disciplina">Desenvolvimento Web</div>
+                        </div>
+                        <div class="prazo-data">25/04</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-grid">
+            <a href="aluno-notas.html" class="menu-card">
+                <div class="icon">📊</div>
+                <h3>Minhas Notas</h3>
+                <p>Ver notas completas e histórico</p>
+            </a>
+
+            <a href="aluno-atividades.html" class="menu-card">
+                <div class="icon">📝</div>
+                <h3>Atividades</h3>
+                <p>Tarefas e trabalhos pendentes</p>
+            </a>
+
+            <a href="aluno-frequencia.html" class="menu-card">
+                <div class="icon">📅</div>
+                <h3>Minha Frequência</h3>
+                <p>Controle de presenças e faltas</p>
+            </a>
+
+            <a href="aluno-horarios.html" class="menu-card">
+                <div class="icon">⏰</div>
+                <h3>Horários</h3>
+                <p>Grade de aulas da semana</p>
+            </a>
+
+            <a href="aluno-material.html" class="menu-card">
+                <div class="icon">📚</div>
+                <h3>Material</h3>
+                <p>Apostilas, slides e conteúdos</p>
+            </a>
+
+            <a href="aluno-calendario.html" class="menu-card">
+                <div class="icon">📆</div>
+                <h3>Calendário</h3>
+                <p>Datas importantes e provas</p>
+            </a>
+
+            <div class="menu-card" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-color: #dee2e6;">
+                <div class="icon">ℹ️</div>
+                <h3>Turma 3° TDS</h3>
+                <p>Desenvolvimento de Sistemas</p>
+            </div>
+
+            <div class="menu-card" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-color: #dee2e6;">
+                <div class="icon">👨‍🏫</div>
+                <h3>Professor</h3>
+                <p>Helcio Soares Padilha</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Sistema Acadêmico - Turma 3° TDS &copy; 2024 - Professor Helcio Soares Padilha</p>
+    </footer>
+
+    <script>
+        // Dados mockados para demonstração
+        const DADOS_ALUNO = {
+            '20243001': { nome: 'Anna Julia de Lima', media: 8.4, frequencia: 92, aprovadas: '4/5', atividades: '8/12' },
+            '20243002': { nome: 'Adrian Rodrigo', media: 7.8, frequencia: 88, aprovadas: '4/5', atividades: '7/12' },
+            '20243003': { nome: 'Hygor Meireles', media: 10.0, frequencia: 100, aprovadas: '5/5', atividades: '12/12' },
+            '20243004': { nome: 'Pedro Henrique Camargo', media: 6.4, frequencia: 78, aprovadas: '3/5', atividades: '6/12' },
+            '20243005': { nome: 'Emilly Vieira', media: 7.5, frequencia: 85, aprovadas: '4/5', atividades: '8/12' },
+            '20243006': { nome: 'Thiago Tavares', media: 8.1, frequencia: 90, aprovadas: '4/5', atividades: '9/12' },
+            '20243007': { nome: 'Vinicius Fidelis', media: 10.0, frequencia: 100, aprovadas: '5/5', atividades: '12/12' }
+        };
+
+        function showAlert(message, type = 'success') {
+            const alertasExistentes = document.querySelectorAll('.alert');
+            alertasExistentes.forEach(alert => alert.remove());
+
+            const alert = document.createElement('div');
+            alert.className = `alert`;
+            alert.textContent = message;
+            alert.style.background = type === 'success' ? '#27ae60' : '#e74c3c';
+            
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 3000);
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'index.html';
+            }
+        }
+
+        function carregarDadosAluno() {
+            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            
+            if (!usuarioLogado || usuarioLogado.tipo !== 'aluno') {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const aluno = DADOS_ALUNO[usuarioLogado.matricula] || DADOS_ALUNO['20243001'];
+
+            // Personalizar interface com dados do aluno
+            document.getElementById('studentName').textContent = `Bem-vindo, ${usuarioLogado.nome}!`;
+            document.getElementById('studentMatricula').textContent = usuarioLogado.matricula;
+            document.getElementById('userWelcome').textContent = `${usuarioLogado.turma} - Período Matutino`;
+
+            // Atualizar estatísticas
+            document.getElementById('mediaGeral').textContent = aluno.media;
+            document.getElementById('frequencia').textContent = `${aluno.frequencia}%`;
+            document.getElementById('disciplinasAprovadas').textContent = aluno.aprovadas;
+            document.getElementById('atividadesEntregues').textContent = aluno.atividades;
+
+            // Personalizar notas baseado no aluno
+            personalizarNotas(usuarioLogado.matricula);
+        }
+
+        function personalizarNotas(matricula) {
+            const notasPorAluno = {
+                '20243001': { dw: 8.4, bd: 7.5, pm: 8.9, rc: 6.4, es: 7.9 },
+                '20243002': { dw: 7.8, bd: 7.2, pm: 8.5, rc: 7.0, es: 7.5 },
+                '20243003': { dw: 9.2, bd: 8.8, pm: 9.0, rc: 8.5, es: 8.9 },
+                '20243004': { dw: 6.0, bd: 5.8, pm: 7.2, rc: 6.4, es: 6.5 },
+                '20243005': { dw: 7.5, bd: 7.8, pm: 8.0, rc: 6.8, es: 7.2 },
+                '20243006': { dw: 8.0, bd: 8.2, pm: 8.5, rc: 7.5, es: 8.1 },
+                '20243007': { dw: 9.8, bd: 8.5, pm: 9.8, rc: 9.5, es: 8.3 }
+            };
+
+            const notas = notasPorAluno[matricula] || notasPorAluno['20243001'];
+            const gradeItems = document.querySelectorAll('.grade-item');
+
+            // Atualizar notas nas disciplinas
+            gradeItems[0].querySelector('.grade-nota').textContent = notas.dw;
+            gradeItems[1].querySelector('.grade-nota').textContent = notas.bd;
+            gradeItems[2].querySelector('.grade-nota').textContent = notas.pm;
+            gradeItems[3].querySelector('.grade-nota').textContent = notas.rc;
+            gradeItems[4].querySelector('.grade-nota').textContent = notas.es;
+
+            // Atualizar cores baseado nas notas
+            gradeItems.forEach((item, index) => {
+                const notaElement = item.querySelector('.grade-nota');
+                const nota = Object.values(notas)[index];
+                
+                notaElement.className = 'grade-nota ' + (
+                    nota >= 7 ? 'nota-aprovado' : 
+                    nota >= 5 ? 'nota-recuperacao' : 'nota-reprovado'
+                );
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarDadosAluno();
+            
+            // Adicionar data atualizada nos eventos
+            const hoje = new Date();
+            const datas = document.querySelectorAll('.prazo-data');
+            datas.forEach(data => {
+                if (data.textContent.includes('/03') || data.textContent.includes('/04')) {
+                    // Manter as datas de exemplo
+                }
+            });
+        });
+    </script>
+</body>
+</html>

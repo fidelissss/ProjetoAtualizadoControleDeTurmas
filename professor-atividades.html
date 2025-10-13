@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividades - Professor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 25px 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-content h1 {
+            margin: 0;
+            color: white;
+            font-size: 2.2em;
+        }
+
+        .header-content p {
+            margin: 8px 0 0 0;
+            color: #bdc3c7;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-logout {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .main-content {
+            padding: 30px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .filters {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: end;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .actions {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .atividades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .atividade-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s ease;
+        }
+
+        .atividade-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .atividade-card.urgente {
+            border-left-color: #e74c3c;
+        }
+
+        .atividade-card.proxima {
+            border-left-color: #f39c12;
+        }
+
+        .atividade-card.concluida {
+            border-left-color: #27ae60;
+            opacity: 0.8;
+        }
+
+        .atividade-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .atividade-info h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1.3em;
+        }
+
+        .atividade-disciplina {
+            color: #3498db;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .atividade-prazo {
+            text-align: right;
+        }
+
+        .prazo-data {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .prazo-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .status-pendente { background: #fff3cd; color: #856404; }
+        .status-entregue { background: #d4edda; color: #155724; }
+        .status-atrasado { background: #f8d7da; color: #721c24; }
+
+        .atividade-descricao {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .atividade-detalhes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .detalhe-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .detalhe-item:last-child {
+            border-bottom: none;
+        }
+
+        .detalhe-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .detalhe-valor {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .atividade-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            text-align: center;
+            transition: background 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #2980b9;
+        }
+
+        .action-btn.success {
+            background: #27ae60;
+        }
+
+        .action-btn.success:hover {
+            background: #219653;
+        }
+
+        .action-btn.warning {
+            background: #f39c12;
+        }
+
+        .action-btn.warning:hover {
+            background: #e67e22;
+        }
+
+        .nova-atividade-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .nova-atividade-btn:hover {
+            background: #219653;
+            transform: scale(1.1);
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        footer p {
+            margin: 0;
+            color: #bdc3c7;
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                min-width: 100%;
+            }
+            
+            .atividades-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .atividade-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .atividade-prazo {
+                text-align: left;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div>
+                <h1>📝 Atividades</h1>
+                <p>Turma 3° TDS - Professor Helcio Soares Padilha</p>
+            </div>
+            <div>
+                <a href="professor-dashboard.html" class="btn btn-secondary">🏠 Voltar</a>
+                <button onclick="logout()" class="btn btn-logout">🚪 Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="filters">
+            <div class="filter-group">
+                <label for="disciplina">Filtrar por Disciplina:</label>
+                <select id="disciplina" onchange="filtrarAtividades()">
+                    <option value="">Todas as disciplinas</option>
+                    <option value="Desenvolvimento Web">Desenvolvimento Web</option>
+                    <option value="Banco de Dados">Banco de Dados</option>
+                    <option value="Programação Mobile">Programação Mobile</option>
+                    <option value="Redes de Computadores">Redes de Computadores</option>
+                    <option value="Engenharia de Software">Engenharia de Software</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="status">Filtrar por Status:</label>
+                <select id="status" onchange="filtrarAtividades()">
+                    <option value="">Todos os status</option>
+                    <option value="pendente">Pendente</option>
+                    <option value="entregue">Entregue</option>
+                    <option value="atrasado">Atrasado</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="ordenar">Ordenar por:</label>
+                <select id="ordenar" onchange="ordenarAtividades()">
+                    <option value="data">Data de Entrega</option>
+                    <option value="disciplina">Disciplina</option>
+                    <option value="valor">Valor</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button onclick="exportarAtividades()" class="btn btn-primary">📊 Exportar Relatório</button>
+            <button onclick="limparFiltros()" class="btn btn-secondary">🔄 Limpar Filtros</button>
+        </div>
+
+        <div class="atividades-grid" id="atividadesContainer">
+            <!-- Projeto Site Institucional -->
+            <div class="atividade-card">
+                <div class="atividade-header">
+                    <div class="atividade-info">
+                        <h3>Projeto Site Institucional</h3>
+                        <div class="atividade-disciplina">Desenvolvimento Web</div>
+                    </div>
+                    <div class="atividade-prazo">
+                        <div class="prazo-data">10/04/2024</div>
+                        <span class="prazo-status status-pendente">Pendente</span>
+                    </div>
+                </div>
+                <div class="atividade-descricao">
+                    Criar um site institucional responsivo usando HTML, CSS e JavaScript para uma empresa fictícia.
+                </div>
+                <div class="atividade-detalhes">
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Valor:</span>
+                        <span class="detalhe-valor">10.0 pontos</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Entregues:</span>
+                        <span class="detalhe-valor">5/7</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Média:</span>
+                        <span class="detalhe-valor">8.2</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Prazo:</span>
+                        <span class="detalhe-valor">15 dias</span>
+                    </div>
+                </div>
+                <div class="atividade-actions">
+                    <button class="action-btn" onclick="verEntregas(1)">📋 Ver Entregas</button>
+                    <button class="action-btn success" onclick="editarAtividade(1)">✏️ Editar</button>
+                </div>
+            </div>
+
+            <!-- Modelagem Banco Escola -->
+            <div class="atividade-card proxima">
+                <div class="atividade-header">
+                    <div class="atividade-info">
+                        <h3>Modelagem Banco Escola</h3>
+                        <div class="atividade-disciplina">Banco de Dados</div>
+                    </div>
+                    <div class="atividade-prazo">
+                        <div class="prazo-data">05/04/2024</div>
+                        <span class="prazo-status status-pendente">Próxima</span>
+                    </div>
+                </div>
+                <div class="atividade-descricao">
+                    Modelar o banco de dados para sistema escolar com diagrama ER e scripts SQL.
+                </div>
+                <div class="atividade-detalhes">
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Valor:</span>
+                        <span class="detalhe-valor">8.0 pontos</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Entregues:</span>
+                        <span class="detalhe-valor">3/7</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Média:</span>
+                        <span class="detalhe-valor">7.5</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Prazo:</span>
+                        <span class="detalhe-valor">10 dias</span>
+                    </div>
+                </div>
+                <div class="atividade-actions">
+                    <button class="action-btn" onclick="verEntregas(2)">📋 Ver Entregas</button>
+                    <button class="action-btn success" onclick="editarAtividade(2)">✏️ Editar</button>
+                </div>
+            </div>
+
+            <!-- App Lista de Tarefas -->
+            <div class="atividade-card urgente">
+                <div class="atividade-header">
+                    <div class="atividade-info">
+                        <h3>App Lista de Tarefas</h3>
+                        <div class="atividade-disciplina">Programação Mobile</div>
+                    </div>
+                    <div class="atividade-prazo">
+                        <div class="prazo-data">28/03/2024</div>
+                        <span class="prazo-status status-atrasado">Urgente</span>
+                    </div>
+                </div>
+                <div class="atividade-descricao">
+                    Desenvolver aplicativo mobile de lista de tarefas com React Native e Firebase.
+                </div>
+                <div class="atividade-detalhes">
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Valor:</span>
+                        <span class="detalhe-valor">12.0 pontos</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Entregues:</span>
+                        <span class="detalhe-valor">2/7</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Média:</span>
+                        <span class="detalhe-valor">-</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Prazo:</span>
+                        <span class="detalhe-valor">2 dias</span>
+                    </div>
+                </div>
+                <div class="atividade-actions">
+                    <button class="action-btn warning" onclick="enviarLembrete(3)">🔔 Lembrete</button>
+                    <button class="action-btn" onclick="verEntregas(3)">📋 Ver Entregas</button>
+                </div>
+            </div>
+
+            <!-- Configuração Rede LAN -->
+            <div class="atividade-card concluida">
+                <div class="atividade-header">
+                    <div class="atividade-info">
+                        <h3>Configuração Rede LAN</h3>
+                        <div class="atividade-disciplina">Redes de Computadores</div>
+                    </div>
+                    <div class="atividade-prazo">
+                        <div class="prazo-data">15/03/2024</div>
+                        <span class="prazo-status status-entregue">Concluída</span>
+                    </div>
+                </div>
+                <div class="atividade-descricao">
+                    Configurar rede LAN simulada com roteadores, switches e políticas de segurança.
+                </div>
+                <div class="atividade-detalhes">
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Valor:</span>
+                        <span class="detalhe-valor">6.0 pontos</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Entregues:</span>
+                        <span class="detalhe-valor">7/7</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Média:</span>
+                        <span class="detalhe-valor">7.8</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Status:</span>
+                        <span class="detalhe-valor">Avaliada</span>
+                    </div>
+                </div>
+                <div class="atividade-actions">
+                    <button class="action-btn" onclick="verNotas(4)">📊 Ver Notas</button>
+                    <button class="action-btn" onclick="reabrirAtividade(4)">🔄 Reabrir</button>
+                </div>
+            </div>
+        </div>
+
+        <button class="nova-atividade-btn" onclick="novaAtividade()" title="Nova Atividade">+</button>
+    </main>
+
+    <footer>
+        <p>Sistema Acadêmico - Turma 3° TDS &copy; 2024 - Professor Helcio Soares Padilha</p>
+    </footer>
+
+    <script>
+        function filtrarAtividades() {
+            const disciplinaFiltro = document.getElementById('disciplina').value;
+            const statusFiltro = document.getElementById('status').value;
+            const atividades = document.querySelectorAll('.atividade-card');
+            
+            atividades.forEach(atividade => {
+                const disciplina = atividade.querySelector('.atividade-disciplina').textContent;
+                const statusElement = atividade.querySelector('.prazo-status');
+                const status = statusElement.textContent.toLowerCase();
+                
+                const matchDisciplina = !disciplinaFiltro || disciplina === disciplinaFiltro;
+                const matchStatus = !statusFiltro || status.includes(statusFiltro);
+                
+                if (matchDisciplina && matchStatus) {
+                    atividade.style.display = 'block';
+                } else {
+                    atividade.style.display = 'none';
+                }
+            });
+        }
+
+        function ordenarAtividades() {
+            const ordenarPor = document.getElementById('ordenar').value;
+            const container = document.getElementById('atividadesContainer');
+            const atividades = Array.from(container.children);
+            
+            atividades.sort((a, b) => {
+                if (ordenarPor === 'data') {
+                    const dataA = a.querySelector('.prazo-data').textContent;
+                    const dataB = b.querySelector('.prazo-data').textContent;
+                    return new Date(dataA.split('/').reverse().join('-')) - new Date(dataB.split('/').reverse().join('-'));
+                } else if (ordenarPor === 'disciplina') {
+                    const discA = a.querySelector('.atividade-disciplina').textContent;
+                    const discB = b.querySelector('.atividade-disciplina').textContent;
+                    return discA.localeCompare(discB);
+                } else if (ordenarPor === 'valor') {
+                    const valorA = parseFloat(a.querySelector('.detalhe-valor').textContent);
+                    const valorB = parseFloat(b.querySelector('.detalhe-valor').textContent);
+                    return valorB - valorA;
+                }
+                return 0;
+            });
+            
+            // Reordenar no container
+            atividades.forEach(atividade => container.appendChild(atividade));
+        }
+
+        function limparFiltros() {
+            document.getElementById('disciplina').value = '';
+            document.getElementById('status').value = '';
+            document.getElementById('ordenar').value = 'data';
+            filtrarAtividades();
+        }
+
+        function exportarAtividades() {
+            alert('Relatório de atividades exportado com sucesso!');
+        }
+
+        function novaAtividade() {
+            alert('Abrindo formulário para nova atividade...');
+        }
+
+        function verEntregas(id) {
+            alert(`Visualizando entregas da atividade ${id}`);
+        }
+
+        function editarAtividade(id) {
+            alert(`Editando atividade ${id}`);
+        }
+
+        function enviarLembrete(id) {
+            alert(`Lembrete enviado para atividade ${id}`);
+        }
+
+        function verNotas(id) {
+            alert(`Visualizando notas da atividade ${id}`);
+        }
+
+        function reabrirAtividade(id) {
+            if (confirm('Tem certeza que deseja reabrir esta atividade?')) {
+                alert(`Atividade ${id} reaberta para entregas`);
+            }
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'index.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            
+            if (!usuarioLogado || usuarioLogado.tipo !== 'professor') {
+                window.location.href = 'index.html';
+                return;
+            }
+        });
+    </script>
+</body>
+</html>

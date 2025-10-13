@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Frequência - Professor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 25px 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-content h1 {
+            margin: 0;
+            color: white;
+            font-size: 2.2em;
+        }
+
+        .header-content p {
+            margin: 8px 0 0 0;
+            color: #bdc3c7;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #219653;
+        }
+
+        .btn-logout {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .main-content {
+            padding: 30px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .filters {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: end;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .actions {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .frequencia-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+            text-align: center;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .aluno-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .aluno-avatar {
+            width: 40px;
+            height: 40px;
+            background: #3498db;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .presenca-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .presenca-cell {
+            position: relative;
+        }
+
+        .presenca-cell.presente {
+            background: #d4edda;
+        }
+
+        .presenca-cell.falta {
+            background: #f8d7da;
+        }
+
+        .resumo-frequencia {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .resumo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .resumo-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .resumo-valor {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .resumo-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .data-header {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .data-header h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .data-info {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .footer-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        .legenda {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .legenda-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legenda-cor {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+
+        .legenda-presente { background: #d4edda; }
+        .legenda-falta { background: #f8d7da; }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        footer p {
+            margin: 0;
+            color: #bdc3c7;
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                min-width: 100%;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .footer-actions {
+                flex-direction: column;
+            }
+            
+            .resumo-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div>
+                <h1>📅 Controle de Frequência</h1>
+                <p>Turma 3° TDS - Professor Helcio Soares Padilha</p>
+            </div>
+            <div>
+                <a href="professor-dashboard.html" class="btn btn-secondary">🏠 Voltar</a>
+                <button onclick="logout()" class="btn btn-logout">🚪 Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="filters">
+            <div class="filter-group">
+                <label for="disciplina">Disciplina:</label>
+                <select id="disciplina" onchange="carregarFrequencia()">
+                    <option value="1">Desenvolvimento Web</option>
+                    <option value="2">Banco de Dados</option>
+                    <option value="3">Programação Mobile</option>
+                    <option value="4">Redes de Computadores</option>
+                    <option value="5">Engenharia de Software</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="dataAula">Data da Aula:</label>
+                <input type="date" id="dataAula" onchange="carregarFrequencia()">
+            </div>
+            <div class="filter-group">
+                <label for="periodo">Período:</label>
+                <select id="periodo" onchange="carregarFrequencia()">
+                    <option value="matutino">Matutino</option>
+                    <option value="vespertino">Vespertino</option>
+                    <option value="noturno">Noturno</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button onclick="marcarTodosPresentes()" class="btn btn-success">✅ Marcar Todos Presentes</button>
+            <button onclick="marcarTodosFaltas()" class="btn btn-secondary">❌ Marcar Todos Faltas</button>
+            <button onclick="exportarFrequencia()" class="btn btn-primary">📊 Exportar Relatório</button>
+        </div>
+
+        <div class="frequencia-container">
+            <div class="data-header">
+                <h3 id="infoAula">Aula de Desenvolvimento Web</h3>
+                <div class="data-info">
+                    <span id="infoData">Data: </span> | 
+                    <span id="infoPeriodo">Período: Matutino</span> |
+                    <span id="infoTotal">Total de alunos: 7</span>
+                </div>
+            </div>
+
+            <div class="resumo-frequencia">
+                <h4>📊 Resumo da Frequência</h4>
+                <div class="resumo-grid">
+                    <div class="resumo-item">
+                        <div class="resumo-valor" id="totalPresentes">-</div>
+                        <div class="resumo-label">Presentes</div>
+                    </div>
+                    <div class="resumo-item">
+                        <div class="resumo-valor" id="totalFaltas">-</div>
+                        <div class="resumo-label">Faltas</div>
+                    </div>
+                    <div class="resumo-item">
+                        <div class="resumo-valor" id="percentualFrequencia">-</div>
+                        <div class="resumo-label">Frequência</div>
+                    </div>
+                    <div class="resumo-item">
+                        <div class="resumo-valor" id="totalAlunos">7</div>
+                        <div class="resumo-label">Total Alunos</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="tabelaFrequencia">
+                    <thead>
+                        <tr>
+                            <th>Aluno</th>
+                            <th>Matrícula</th>
+                            <th>Presença</th>
+                            <th>Justificativa</th>
+                            <th>Observações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="aluno-info">
+                                    <div class="aluno-avatar">A</div>
+                                    <div>
+                                        <div>Anna Julia de Lima</div>
+                                        <small style="color: #7f8c8d;">Frequência: 92%</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>20243001</strong></td>
+                            <td class="presenca-cell presente">
+                                <input type="checkbox" class="presenca-checkbox" checked 
+                                       onchange="atualizarPresenca(this, '20243001')">
+                            </td>
+                            <td>-</td>
+                            <td>
+                                <input type="text" placeholder="Observações..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="aluno-info">
+                                    <div class="aluno-avatar">A</div>
+                                    <div>
+                                        <div>Adrian Rodrigo</div>
+                                        <small style="color: #7f8c8d;">Frequência: 88%</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>20243002</strong></td>
+                            <td class="presenca-cell presente">
+                                <input type="checkbox" class="presenca-checkbox" checked 
+                                       onchange="atualizarPresenca(this, '20243002')">
+                            </td>
+                            <td>-</td>
+                            <td>
+                                <input type="text" placeholder="Observações..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="aluno-info">
+                                    <div class="aluno-avatar">H</div>
+                                    <div>
+                                        <div>Hygor Meireles</div>
+                                        <small style="color: #7f8c8d;">Frequência: 95%</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>20243003</strong></td>
+                            <td class="presenca-cell presente">
+                                <input type="checkbox" class="presenca-checkbox" checked 
+                                       onchange="atualizarPresenca(this, '20243003')">
+                            </td>
+                            <td>-</td>
+                            <td>
+                                <input type="text" placeholder="Observações..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="aluno-info">
+                                    <div class="aluno-avatar">P</div>
+                                    <div>
+                                        <div>Pedro Henrique Camargo</div>
+                                        <small style="color: #7f8c8d;">Frequência: 78%</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>20243004</strong></td>
+                            <td class="presenca-cell falta">
+                                <input type="checkbox" class="presenca-checkbox" 
+                                       onchange="atualizarPresenca(this, '20243004')">
+                            </td>
+                            <td>
+                                <select style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                                    <option value="">Selecionar...</option>
+                                    <option value="doenca">Doença</option>
+                                    <option value="familia">Problema familiar</option>
+                                    <option value="transporte">Problema de transporte</option>
+                                    <option value="outro">Outro</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" placeholder="Detalhes da falta..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="aluno-info">
+                                    <div class="aluno-avatar">E</div>
+                                    <div>
+                                        <div>Emilly Vieira</div>
+                                        <small style="color: #7f8c8d;">Frequência: 85%</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>20243005</strong></td>
+                            <td class="presenca-cell presente">
+                                <input type="checkbox" class="presenca-checkbox" checked 
+                                       onchange="atualizarPresenca(this, '20243005')">
+                            </td>
+                            <td>-</td>
+                            <td>
+                                <input type="text" placeholder="Observações..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="aluno-info">
+                                    <div class="aluno-avatar">T</div>
+                                    <div>
+                                        <div>Thiago Tavares</div>
+                                        <small style="color: #7f8c8d;">Frequência: 90%</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>20243006</strong></td>
+                            <td class="presenca-cell presente">
+                                <input type="checkbox" class="presenca-checkbox" checked 
+                                       onchange="atualizarPresenca(this, '20243006')">
+                            </td>
+                            <td>-</td>
+                            <td>
+                                <input type="text" placeholder="Observações..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="aluno-info">
+                                    <div class="aluno-avatar">V</div>
+                                    <div>
+                                        <div>Vinicius Fidelis</div>
+                                        <small style="color: #7f8c8d;">Frequência: 82%</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>20243007</strong></td>
+                            <td class="presenca-cell falta">
+                                <input type="checkbox" class="presenca-checkbox" 
+                                       onchange="atualizarPresenca(this, '20243007')">
+                            </td>
+                            <td>
+                                <select style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                                    <option value="">Selecionar...</option>
+                                    <option value="doenca">Doença</option>
+                                    <option value="familia">Problema familiar</option>
+                                    <option value="transporte">Problema de transporte</option>
+                                    <option value="outro">Outro</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" placeholder="Detalhes da falta..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="legenda">
+                <div class="legenda-item">
+                    <div class="legenda-cor legenda-presente"></div>
+                    <span>Presente</span>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-cor legenda-falta"></div>
+                    <span>Falta</span>
+                </div>
+            </div>
+
+            <div class="footer-actions">
+                <button onclick="salvarFrequencia()" class="btn btn-success">💾 Salvar Frequência</button>
+                <button onclick="limparFrequencia()" class="btn btn-secondary">🔄 Limpar</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Sistema Acadêmico - Turma 3° TDS &copy; 2024 - Professor Helcio Soares Padilha</p>
+    </footer>
+
+    <script>
+        function carregarFrequencia() {
+            const disciplinaSelect = document.getElementById('disciplina');
+            const dataAulaInput = document.getElementById('dataAula');
+            const periodoSelect = document.getElementById('periodo');
+            
+            const disciplinas = {
+                '1': 'Desenvolvimento Web',
+                '2': 'Banco de Dados',
+                '3': 'Programação Mobile',
+                '4': 'Redes de Computadores',
+                '5': 'Engenharia de Software'
+            };
+
+            document.getElementById('infoAula').textContent = `Aula de ${disciplinas[disciplinaSelect.value]}`;
+            document.getElementById('infoData').textContent = `Data: ${dataAulaInput.value || 'Não definida'}`;
+            document.getElementById('infoPeriodo').textContent = `Período: ${periodoSelect.value}`;
+
+            atualizarResumo();
+        }
+
+        function atualizarPresenca(checkbox, matricula) {
+            const cell = checkbox.closest('.presenca-cell');
+            
+            if (checkbox.checked) {
+                cell.className = 'presenca-cell presente';
+            } else {
+                cell.className = 'presenca-cell falta';
+            }
+
+            console.log(`Presença atualizada: Aluno ${matricula} - Presente: ${checkbox.checked}`);
+            atualizarResumo();
+        }
+
+        function atualizarResumo() {
+            const checkboxes = document.querySelectorAll('.presenca-checkbox');
+            const totalAlunos = checkboxes.length;
+            const totalPresentes = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const totalFaltas = totalAlunos - totalPresentes;
+            const percentualFrequencia = Math.round((totalPresentes / totalAlunos) * 100);
+
+            document.getElementById('totalPresentes').textContent = totalPresentes;
+            document.getElementById('totalFaltas').textContent = totalFaltas;
+            document.getElementById('percentualFrequencia').textContent = `${percentualFrequencia}%`;
+        }
+
+        function marcarTodosPresentes() {
+            const checkboxes = document.querySelectorAll('.presenca-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+                const cell = checkbox.closest('.presenca-cell');
+                cell.className = 'presenca-cell presente';
+            });
+            atualizarResumo();
+            alert('Todos os alunos marcados como presentes!');
+        }
+
+        function marcarTodosFaltas() {
+            const checkboxes = document.querySelectorAll('.presenca-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+                const cell = checkbox.closest('.presenca-cell');
+                cell.className = 'presenca-cell falta';
+            });
+            atualizarResumo();
+            alert('Todos os alunos marcados como faltas!');
+        }
+
+        function salvarFrequencia() {
+            const dataAula = document.getElementById('dataAula').value;
+            if (!dataAula) {
+                alert('Por favor, selecione uma data para a aula.');
+                return;
+            }
+
+            const checkboxes = document.querySelectorAll('.presenca-checkbox');
+            let todasSalvas = true;
+
+            checkboxes.forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                const matricula = row.cells[1].textContent;
+                const presente = checkbox.checked;
+                
+                console.log(`Salvando frequência: ${matricula} - Presente: ${presente}`);
+            });
+
+            alert('Frequência salva com sucesso!');
+        }
+
+        function limparFrequencia() {
+            if (confirm('Tem certeza que deseja limpar toda a frequência?')) {
+                const checkboxes = document.querySelectorAll('.presenca-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                    const cell = checkbox.closest('.presenca-cell');
+                    cell.className = 'presenca-cell falta';
+                });
+                atualizarResumo();
+            }
+        }
+
+        function exportarFrequencia() {
+            alert('Relatório de frequência exportado com sucesso!');
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'index.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            
+            if (!usuarioLogado || usuarioLogado.tipo !== 'professor') {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Definir data atual como padrão
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('dataAula').value = hoje;
+            carregarFrequencia();
+        });
+    </script>
+</body>
+</html>

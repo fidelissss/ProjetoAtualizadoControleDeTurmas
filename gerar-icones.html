@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerar Ícones PWA</title>
+</head>
+<body>
+    <h1>Clique nos links para gerar e baixar os ícones:</h1>
+    
+    <button onclick="gerarIcone(192)">Baixar Ícone 192x192</button>
+    <button onclick="gerarIcone(512)">Baixar Ícone 512x512</button>
+    <button onclick="gerarIcone(144)">Baixar Ícone 144x144</button>
+
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <script>
+        function gerarIcone(tamanho) {
+            const canvas = document.getElementById('canvas');
+            canvas.width = tamanho;
+            canvas.height = tamanho;
+            const ctx = canvas.getContext('2d');
+
+            // Fundo gradiente
+            const gradient = ctx.createLinearGradient(0, 0, tamanho, tamanho);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, tamanho, tamanho);
+
+            // Ícone de livro
+            ctx.fillStyle = 'white';
+            const fontSize = tamanho * 0.4; // 40% do tamanho
+            ctx.font = `bold ${fontSize}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('📚', tamanho/2, tamanho/2);
+
+            // Download
+            const link = document.createElement('a');
+            link.download = `icon-${tamanho}x${tamanho}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // Gera todos automaticamente
+        setTimeout(() => {
+            gerarIcone(144);
+            setTimeout(() => gerarIcone(192), 500);
+            setTimeout(() => gerarIcone(512), 1000);
+        }, 1000);
+    </script>
+</body>
+</html>

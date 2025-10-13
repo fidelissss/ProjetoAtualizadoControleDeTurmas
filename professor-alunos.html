@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Alunos - Professor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 25px 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-content h1 {
+            margin: 0;
+            color: white;
+            font-size: 2.2em;
+        }
+
+        .header-content p {
+            margin: 8px 0 0 0;
+            color: #bdc3c7;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-logout {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .main-content {
+            padding: 30px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .filters {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: end;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .actions {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+
+        .btn-action.view:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-action.edit:hover {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-action.calendar:hover {
+            background: #27ae60;
+            color: white;
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status.ativo { 
+            background: #d4edda; 
+            color: #155724; 
+        }
+
+        .progress-bar {
+            width: 80px;
+            height: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #27ae60;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.7em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        footer p {
+            margin: 0;
+            color: #bdc3c7;
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                min-width: 100%;
+            }
+            
+            .actions-cell {
+                flex-direction: column;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div>
+                <h1>🎓 Gerenciar Alunos</h1>
+                <p>Turma 3° TDS - Professor Helcio Soares Padilha</p>
+            </div>
+            <div>
+                <a href="professor-dashboard.html" class="btn btn-secondary">🏠 Voltar</a>
+                <button onclick="logout()" class="btn btn-logout">🚪 Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="filters">
+            <div class="filter-group">
+                <label for="search">Buscar aluno:</label>
+                <input type="text" id="search" placeholder="Digite nome ou matrícula...">
+            </div>
+            <div class="filter-group">
+                <label for="status">Filtrar por status:</label>
+                <select id="status">
+                    <option value="">Todos os alunos</option>
+                    <option value="Ativo">Ativo</option>
+                    <option value="Inativo">Inativo</option>
+                </select>
+            </div>
+            <button onclick="limparFiltros()" class="btn btn-secondary">🔄 Limpar</button>
+        </div>
+
+        <div class="actions">
+            <button onclick="exportarDados()" class="btn btn-primary">📊 Exportar Relatório</button>
+            <button onclick="gerarBoletimGeral()" class="btn btn-primary">📋 Boletim Geral</button>
+        </div>
+
+        <div class="table-container">
+            <table id="tabelaAlunos">
+                <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Frequência</th>
+                        <th>Média Geral</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>20243001</strong></td>
+                        <td>Anna Julia de Lima</td>
+                        <td>anna.lima@escola.com</td>
+                        <td>(11) 99999-0001</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 92%"></div>
+                                <span class="progress-text">92%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-success">8.4</span></td>
+                        <td><span class="status ativo">Ativo</span></td>
+                        <td class="actions-cell">
+                            <button class="btn-action view" title="Ver detalhes">👁️</button>
+                            <button class="btn-action edit" title="Lançar nota">📝</button>
+                            <button class="btn-action calendar" title="Frequência">📅</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>20243002</strong></td>
+                        <td>Adrian Rodrigo</td>
+                        <td>adrian.rodrigo@escola.com</td>
+                        <td>(11) 99999-0002</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 88%"></div>
+                                <span class="progress-text">88%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-success">7.8</span></td>
+                        <td><span class="status ativo">Ativo</span></td>
+                        <td class="actions-cell">
+                            <button class="btn-action view" title="Ver detalhes">👁️</button>
+                            <button class="btn-action edit" title="Lançar nota">📝</button>
+                            <button class="btn-action calendar" title="Frequência">📅</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>20243003</strong></td>
+                        <td>Hygor Meireles</td>
+                        <td>hygor.meireles@escola.com</td>
+                        <td>(11) 99999-0003</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 95%"></div>
+                                <span class="progress-text">95%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-success">8.9</span></td>
+                        <td><span class="status ativo">Ativo</span></td>
+                        <td class="actions-cell">
+                            <button class="btn-action view" title="Ver detalhes">👁️</button>
+                            <button class="btn-action edit" title="Lançar nota">📝</button>
+                            <button class="btn-action calendar" title="Frequência">📅</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>20243004</strong></td>
+                        <td>Pedro Henrique Camargo</td>
+                        <td>pedro.camargo@escola.com</td>
+                        <td>(11) 99999-0004</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 78%"></div>
+                                <span class="progress-text">78%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-warning">6.4</span></td>
+                        <td><span class="status ativo">Ativo</span></td>
+                        <td class="actions-cell">
+                            <button class="btn-action view" title="Ver detalhes">👁️</button>
+                            <button class="btn-action edit" title="Lançar nota">📝</button>
+                            <button class="btn-action calendar" title="Frequência">📅</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>20243005</strong></td>
+                        <td>Emilly Vieira</td>
+                        <td>emilly.vieira@escola.com</td>
+                        <td>(11) 99999-0005</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 85%"></div>
+                                <span class="progress-text">85%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-success">7.5</span></td>
+                        <td><span class="status ativo">Ativo</span></td>
+                        <td class="actions-cell">
+                            <button class="btn-action view" title="Ver detalhes">👁️</button>
+                            <button class="btn-action edit" title="Lançar nota">📝</button>
+                            <button class="btn-action calendar" title="Frequência">📅</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>20243006</strong></td>
+                        <td>Thiago Tavares</td>
+                        <td>thiago.tavares@escola.com</td>
+                        <td>(11) 99999-0006</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 90%"></div>
+                                <span class="progress-text">90%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-success">8.1</span></td>
+                        <td><span class="status ativo">Ativo</span></td>
+                        <td class="actions-cell">
+                            <button class="btn-action view" title="Ver detalhes">👁️</button>
+                            <button class="btn-action edit" title="Lançar nota">📝</button>
+                            <button class="btn-action calendar" title="Frequência">📅</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>20243007</strong></td>
+                        <td>Vinicius Fidelis</td>
+                        <td>vinicius.fidelis@escola.com</td>
+                        <td>(11) 99999-0007</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 82%"></div>
+                                <span class="progress-text">82%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-warning">6.8</span></td>
+                        <td><span class="status ativo">Ativo</span></td>
+                        <td class="actions-cell">
+                            <button class="btn-action view" title="Ver detalhes">👁️</button>
+                            <button class="btn-action edit" title="Lançar nota">📝</button>
+                            <button class="btn-action calendar" title="Frequência">📅</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <p>Sistema Acadêmico - Turma 3° TDS &copy; 2024 - Professor Helcio Soares Padilha</p>
+    </footer>
+
+    <script>
+        function limparFiltros() {
+            document.getElementById('search').value = '';
+            document.getElementById('status').value = '';
+            filtrarAlunos();
+        }
+
+        function filtrarAlunos() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const statusFilter = document.getElementById('status').value;
+            
+            const linhas = document.querySelectorAll('#tabelaAlunos tbody tr');
+            let encontrouResultados = false;
+            
+            linhas.forEach(linha => {
+                const nome = linha.cells[1].textContent.toLowerCase();
+                const matricula = linha.cells[0].textContent.toLowerCase();
+                const status = linha.cells[6].textContent;
+                
+                const matchSearch = nome.includes(searchTerm) || matricula.includes(searchTerm);
+                const matchStatus = !statusFilter || status === statusFilter;
+                
+                if (matchSearch && matchStatus) {
+                    linha.style.display = '';
+                    encontrouResultados = true;
+                } else {
+                    linha.style.display = 'none';
+                }
+            });
+        }
+
+        function exportarDados() {
+            alert('Relatório exportado com sucesso!');
+        }
+
+        function gerarBoletimGeral() {
+            alert('Boletim geral gerado!');
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'index.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            
+            if (!usuarioLogado || usuarioLogado.tipo !== 'professor') {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.getElementById('search').addEventListener('input', filtrarAlunos);
+            document.getElementById('status').addEventListener('change', filtrarAlunos);
+        });
+    </script>
+</body>
+</html>

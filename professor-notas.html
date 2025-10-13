@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lançar Notas - Professor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 25px 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-content h1 {
+            margin: 0;
+            color: white;
+            font-size: 2.2em;
+        }
+
+        .header-content p {
+            margin: 8px 0 0 0;
+            color: #bdc3c7;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #219653;
+        }
+
+        .btn-logout {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .main-content {
+            padding: 30px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .filters {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: end;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .notas-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .nota-input {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .nota-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .aluno-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .aluno-avatar {
+            width: 40px;
+            height: 40px;
+            background: #3498db;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        .disciplina-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .disciplina-header h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .disciplina-info {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .status-salvo { background: #d4edda; color: #155724; }
+        .status-pendente { background: #fff3cd; color: #856404; }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        footer p {
+            margin: 0;
+            color: #bdc3c7;
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                min-width: 100%;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .aluno-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div>
+                <h1>📝 Lançar Notas</h1>
+                <p>Turma 3° TDS - Professor Helcio Soares Padilha</p>
+            </div>
+            <div>
+                <a href="professor-dashboard.html" class="btn btn-secondary">🏠 Voltar</a>
+                <button onclick="logout()" class="btn btn-logout">🚪 Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="filters">
+            <div class="filter-group">
+                <label for="disciplina">Disciplina:</label>
+                <select id="disciplina" onchange="carregarNotas()">
+                    <option value="1">Desenvolvimento Web</option>
+                    <option value="2">Banco de Dados</option>
+                    <option value="3">Programação Mobile</option>
+                    <option value="4">Redes de Computadores</option>
+                    <option value="5">Engenharia de Software</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="tipoAvaliacao">Tipo de Avaliação:</label>
+                <select id="tipoAvaliacao" onchange="carregarNotas()">
+                    <option value="Prova Bimestral">Prova Bimestral</option>
+                    <option value="Trabalho Prático">Trabalho Prático</option>
+                    <option value="Apresentação">Apresentação</option>
+                    <option value="Projeto">Projeto</option>
+                    <option value="Exercício">Exercício</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="dataAvaliacao">Data da Avaliação:</label>
+                <input type="date" id="dataAvaliacao" onchange="carregarNotas()">
+            </div>
+        </div>
+
+        <div class="notas-container">
+            <div class="disciplina-header">
+                <h3 id="nomeDisciplina">Desenvolvimento Web</h3>
+                <div class="disciplina-info">
+                    <span id="infoAvaliacao">Prova Bimestral - </span>
+                    <span id="infoData">A definir</span>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="tabelaNotas">
+                    <thead>
+                        <tr>
+                            <th>Aluno</th>
+                            <th>Matrícula</th>
+                            <th>Nota (0-10)</th>
+                            <th>Status</th>
+                            <th>Observações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="aluno-info">
+                                    <div class="aluno-avatar">A</div>
+                                    <div>
+                                        <div>Anna Julia de Lima</div>
+                                        <small style="color: #7f8c8d;">anna.lima@escola.com</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>20243001</strong></td>
+                            <td>
+                                <input type="number" class="nota-input" min="0" max="10" step="0.1" value="8.5" 
+                                       onchange="atualizarStatus(this, '20243001')">
+                            </td>
+                            <td><span class="status-badge status-salvo">Salvo</span></td>
+                            <td>
+                                <input type="text" placeholder="Observações..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="aluno-info">
+                                    <div class="aluno-avatar">A</div>
+                                    <div>
+                                        <div>Adrian Rodrigo</div>
+                                        <small style="color: #7f8c8d;">adrian.rodrigo@escola.com</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>20243002</strong></td>
+                            <td>
+                                <input type="number" class="nota-input" min="0" max="10" step="0.1" value="7.8" 
+                                       onchange="atualizarStatus(this, '20243002')">
+                            </td>
+                            <td><span class="status-badge status-salvo">Salvo</span></td>
+                            <td>
+                                <input type="text" placeholder="Observações..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="aluno-info">
+                                    <div class="aluno-avatar">H</div>
+                                    <div>
+                                        <div>Hygor Meireles</div>
+                                        <small style="color: #7f8c8d;">hygor.meireles@escola.com</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>20243003</strong></td>
+                            <td>
+                                <input type="number" class="nota-input" min="0" max="10" step="0.1" value="9.2" 
+                                       onchange="atualizarStatus(this, '20243003')">
+                            </td>
+                            <td><span class="status-badge status-salvo">Salvo</span></td>
+                            <td>
+                                <input type="text" placeholder="Observações..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="aluno-info">
+                                    <div class="aluno-avatar">P</div>
+                                    <div>
+                                        <div>Pedro Henrique Camargo</div>
+                                        <small style="color: #7f8c8d;">pedro.camargo@escola.com</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>20243004</strong></td>
+                            <td>
+                                <input type="number" class="nota-input" min="0" max="10" step="0.1" value="6.0" 
+                                       onchange="atualizarStatus(this, '20243004')">
+                            </td>
+                            <td><span class="status-badge status-salvo">Salvo</span></td>
+                            <td>
+                                <input type="text" placeholder="Precisa de recuperação..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="aluno-info">
+                                    <div class="aluno-avatar">E</div>
+                                    <div>
+                                        <div>Emilly Vieira</div>
+                                        <small style="color: #7f8c8d;">emilly.vieira@escola.com</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>20243005</strong></td>
+                            <td>
+                                <input type="number" class="nota-input" min="0" max="10" step="0.1" value="7.5" 
+                                       onchange="atualizarStatus(this, '20243005')">
+                            </td>
+                            <td><span class="status-badge status-salvo">Salvo</span></td>
+                            <td>
+                                <input type="text" placeholder="Observações..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="aluno-info">
+                                    <div class="aluno-avatar">T</div>
+                                    <div>
+                                        <div>Thiago Tavares</div>
+                                        <small style="color: #7f8c8d;">thiago.tavares@escola.com</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>20243006</strong></td>
+                            <td>
+                                <input type="number" class="nota-input" min="0" max="10" step="0.1" value="8.0" 
+                                       onchange="atualizarStatus(this, '20243006')">
+                            </td>
+                            <td><span class="status-badge status-salvo">Salvo</span></td>
+                            <td>
+                                <input type="text" placeholder="Observações..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="aluno-info">
+                                    <div class="aluno-avatar">V</div>
+                                    <div>
+                                        <div>Vinicius Fidelis</div>
+                                        <small style="color: #7f8c8d;">vinicius.fidelis@escola.com</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>20243007</strong></td>
+                            <td>
+                                <input type="number" class="nota-input" min="0" max="10" step="0.1" value="6.8" 
+                                       onchange="atualizarStatus(this, '20243007')">
+                            </td>
+                            <td><span class="status-badge status-salvo">Salvo</span></td>
+                            <td>
+                                <input type="text" placeholder="Em recuperação..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="actions">
+                <button onclick="salvarTodasNotas()" class="btn btn-success">💾 Salvar Todas as Notas</button>
+                <button onclick="limparNotas()" class="btn btn-secondary">🔄 Limpar</button>
+                <button onclick="exportarNotas()" class="btn btn-primary">📊 Exportar Planilha</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Sistema Acadêmico - Turma 3° TDS &copy; 2024 - Professor Helcio Soares Padilha</p>
+    </footer>
+
+    <script>
+        function carregarNotas() {
+            const disciplinaSelect = document.getElementById('disciplina');
+            const tipoAvaliacaoSelect = document.getElementById('tipoAvaliacao');
+            const dataAvaliacaoInput = document.getElementById('dataAvaliacao');
+            
+            const disciplinas = {
+                '1': 'Desenvolvimento Web',
+                '2': 'Banco de Dados',
+                '3': 'Programação Mobile',
+                '4': 'Redes de Computadores',
+                '5': 'Engenharia de Software'
+            };
+
+            document.getElementById('nomeDisciplina').textContent = disciplinas[disciplinaSelect.value];
+            document.getElementById('infoAvaliacao').textContent = `${tipoAvaliacaoSelect.value} - `;
+            document.getElementById('infoData').textContent = dataAvaliacaoInput.value || 'A definir';
+
+            // Simular carregamento de notas do localStorage
+            console.log('Carregando notas para:', {
+                disciplina: disciplinas[disciplinaSelect.value],
+                tipo: tipoAvaliacaoSelect.value,
+                data: dataAvaliacaoInput.value
+            });
+        }
+
+        function atualizarStatus(input, matricula) {
+            const nota = parseFloat(input.value);
+            const row = input.closest('tr');
+            const statusBadge = row.querySelector('.status-badge');
+            
+            if (isNaN(nota) || nota < 0 || nota > 10) {
+                statusBadge.textContent = 'Inválida';
+                statusBadge.className = 'status-badge status-pendente';
+                input.style.borderColor = '#e74c3c';
+                return;
+            }
+
+            statusBadge.textContent = 'Pendente';
+            statusBadge.className = 'status-badge status-pendente';
+            input.style.borderColor = '#f39c12';
+
+            console.log(`Nota atualizada: Aluno ${matricula} - Nota: ${nota}`);
+        }
+
+        function salvarTodasNotas() {
+            const inputs = document.querySelectorAll('.nota-input');
+            let todasValidas = true;
+
+            inputs.forEach(input => {
+                const nota = parseFloat(input.value);
+                if (isNaN(nota) || nota < 0 || nota > 10) {
+                    todasValidas = false;
+                    input.style.borderColor = '#e74c3c';
+                } else {
+                    input.style.borderColor = '#27ae60';
+                    const row = input.closest('tr');
+                    const statusBadge = row.querySelector('.status-badge');
+                    statusBadge.textContent = 'Salvo';
+                    statusBadge.className = 'status-badge status-salvo';
+                }
+            });
+
+            if (todasValidas) {
+                alert('Todas as notas foram salvas com sucesso!');
+            } else {
+                alert('Algumas notas estão inválidas. Verifique os valores (0-10).');
+            }
+        }
+
+        function limparNotas() {
+            if (confirm('Tem certeza que deseja limpar todas as notas?')) {
+                const inputs = document.querySelectorAll('.nota-input');
+                inputs.forEach(input => {
+                    input.value = '';
+                    input.style.borderColor = '#e0e0e0';
+                    const row = input.closest('tr');
+                    const statusBadge = row.querySelector('.status-badge');
+                    statusBadge.textContent = 'Pendente';
+                    statusBadge.className = 'status-badge status-pendente';
+                });
+            }
+        }
+
+        function exportarNotas() {
+            alert('Planilha de notas exportada com sucesso!');
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'index.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            
+            if (!usuarioLogado || usuarioLogado.tipo !== 'professor') {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Definir data atual como padrão
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('dataAvaliacao').value = hoje;
+            carregarNotas();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material de Estudo - Aluno</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 25px 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-content h1 {
+            margin: 0;
+            color: white;
+            font-size: 2.2em;
+        }
+
+        .header-content p {
+            margin: 8px 0 0 0;
+            color: #fdc6c1;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-logout {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .main-content {
+            padding: 30px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .search-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        .materiais-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .material-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .material-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .material-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .material-info h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1.3em;
+        }
+
+        .material-disciplina {
+            color: #e74c3c;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .material-tipo {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .tipo-apostila { background: #d4edda; color: #155724; }
+        .tipo-slides { background: #d1ecf1; color: #0c5460; }
+        .tipo-exercicios { background: #fff3cd; color: #856404; }
+        .tipo-projeto { background: #f8d7da; color: #721c24; }
+        .tipo-video { background: #e2e3e5; color: #383d41; }
+
+        .material-descricao {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .material-detalhes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .detalhe-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .detalhe-item:last-child {
+            border-bottom: none;
+        }
+
+        .detalhe-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .detalhe-valor {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .material-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            text-align: center;
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: #c0392b;
+        }
+
+        .action-btn.secondary {
+            background: #95a5a6;
+        }
+
+        .action-btn.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .stats-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .recent-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .recent-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .recent-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .recent-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .recent-item:hover {
+            background: #e9ecef;
+        }
+
+        .recent-icon {
+            font-size: 1.5em;
+        }
+
+        .recent-info {
+            flex: 1;
+        }
+
+        .recent-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.9em;
+        }
+
+        .recent-disciplina {
+            color: #7f8c8d;
+            font-size: 0.8em;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        footer p {
+            margin: 0;
+            color: #bdc3c7;
+        }
+
+        @media (max-width: 768px) {
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .materiais-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .material-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div>
+                <h1>📚 Material de Estudo</h1>
+                <p id="studentInfo">3° TDS - Período Matutino</p>
+            </div>
+            <div>
+                <a href="aluno-dashboard.html" class="btn btn-secondary">🏠 Voltar</a>
+                <button onclick="logout()" class="btn btn-logout">🚪 Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="🔍 Buscar por material, disciplina ou assunto...">
+                <div class="filter-group">
+                    <select class="filter-select" onchange="filtrarMateriais()">
+                        <option value="">Todas as disciplinas</option>
+                        <option value="Desenvolvimento Web">Desenvolvimento Web</option>
+                        <option value="Banco de Dados">Banco de Dados</option>
+                        <option value="Programação Mobile">Programação Mobile</option>
+                        <option value="Redes de Computadores">Redes de Computadores</option>
+                        <option value="Engenharia de Software">Engenharia de Software</option>
+                    </select>
+                    <select class="filter-select" onchange="filtrarMateriais()">
+                        <option value="">Todos os tipos</option>
+                        <option value="apostila">Apostilas</option>
+                        <option value="slides">Slides</option>
+                        <option value="exercicios">Exercícios</option>
+                        <option value="projeto">Projetos</option>
+                        <option value="video">Vídeos</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-icon">📁</div>
+                    <div class="stat-number">24</div>
+                    <div class="stat-label">Materiais Disponíveis</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">📥</div>
+                    <div class="stat-number">18</div>
+                    <div class="stat-label">Downloads Realizados</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Disciplinas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">🆕</div>
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Novos Esta Semana</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="materiais-grid" id="materiaisContainer">
+            <!-- Apostila HTML/CSS -->
+            <div class="material-card">
+                <div class="material-header">
+                    <div class="material-info">
+                        <h3>Apostila HTML5 e CSS3</h3>
+                        <div class="material-disciplina">Desenvolvimento Web</div>
+                    </div>
+                    <span class="material-tipo tipo-apostila">Apostila</span>
+                </div>
+                <div class="material-descricao">
+                    Guia completo de HTML5 e CSS3 com exemplos práticos e exercícios.
+                </div>
+                <div class="material-detalhes">
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Tamanho:</span>
+                        <span class="detalhe-valor">4.2 MB</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Páginas:</span>
+                        <span class="detalhe-valor">120</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Postado em:</span>
+                        <span class="detalhe-valor">15/03/2024</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Downloads:</span>
+                        <span class="detalhe-valor">42</span>
+                    </div>
+                </div>
+                <div class="material-actions">
+                    <a href="#" class="action-btn">📥 Baixar</a>
+                    <a href="#" class="action-btn secondary">👁️ Visualizar</a>
+                </div>
+            </div>
+
+            <!-- Slides Banco de Dados -->
+            <div class="material-card">
+                <div class="material-header">
+                    <div class="material-info">
+                        <h3>Modelagem de Dados</h3>
+                        <div class="material-disciplina">Banco de Dados</div>
+                    </div>
+                    <span class="material-tipo tipo-slides">Slides</span>
+                </div>
+                <div class="material-descricao">
+                    Apresentação sobre modelagem ER, normalização e diagramas UML.
+                </div>
+                <div class="material-detalhes">
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Tamanho:</span>
+                        <span class="detalhe-valor">2.8 MB</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Slides:</span>
+                        <span class="detalhe-valor">45</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Postado em:</span>
+                        <span class="detalhe-valor">18/03/2024</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Downloads:</span>
+                        <span class="detalhe-valor">38</span>
+                    </div>
+                </div>
+                <div class="material-actions">
+                    <a href="#" class="action-btn">📥 Baixar</a>
+                    <a href="#" class="action-btn secondary">👁️ Visualizar</a>
+                </div>
+            </div>
+
+            <!-- Exercícios React Native -->
+            <div class="material-card">
+                <div class="material-header">
+                    <div class="material-info">
+                        <h3>Exercícios React Native</h3>
+                        <div class="material-disciplina">Programação Mobile</div>
+                    </div>
+                    <span class="material-tipo tipo-exercicios">Exercícios</span>
+                </div>
+                <div class="material-descricao">
+                    Lista de exercícios práticos de React Native com soluções comentadas.
+                </div>
+                <div class="material-detalhes">
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Tamanho:</span>
+                        <span class="detalhe-valor">1.5 MB</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Exercícios:</span>
+                        <span class="detalhe-valor">15</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Postado em:</span>
+                        <span class="detalhe-valor">20/03/2024</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Downloads:</span>
+                        <span class="detalhe-valor">29</span>
+                    </div>
+                </div>
+                <div class="material-actions">
+                    <a href="#" class="action-btn">📥 Baixar</a>
+                    <a href="#" class="action-btn secondary">👁️ Visualizar</a>
+                </div>
+            </div>
+
+            <!-- Projeto Configuração Rede -->
+            <div class="material-card">
+                <div class="material-header">
+                    <div class="material-info">
+                        <h3>Projeto Rede LAN</h3>
+                        <div class="material-disciplina">Redes de Computadores</div>
+                    </div>
+                    <span class="material-tipo tipo-projeto">Projeto</span>
+                </div>
+                <div class="material-descricao">
+                    Documentação completa para configuração de rede LAN empresarial.
+                </div>
+                <div class="material-detalhes">
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Tamanho:</span>
+                        <span class="detalhe-valor">3.7 MB</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Arquivos:</span>
+                        <span class="detalhe-valor">8</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Postado em:</span>
+                        <span class="detalhe-valor">22/03/2024</span>
+                    </div>
+                    <div class="detalhe-item">
+                        <span class="detalhe-label">Downloads:</span>
+                        <span class="detalhe-valor">24</span>
+                    </div>
+                </div>
+                <div class="material-actions">
+                    <a href="#" class="action-btn">📥 Baixar</a>
+                    <a href="#" class="action-btn secondary">👁️ Visualizar</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="recent-section">
+            <h2>🆕 Materiais Recentes</h2>
+            <div class="recent-list">
+                <div class="recent-item">
+                    <div class="recent-icon">📄</div>
+                    <div class="recent-info">
+                        <div class="recent-name">Guia Scrum e Agile</div>
+                        <div class="recent-disciplina">Engenharia de Software</div>
+                    </div>
+                </div>
+                <div class="recent-item">
+                    <div class="recent-icon">🎬</div>
+                    <div class="recent-info">
+                        <div class="recent-name">Vídeo Aula - JavaScript</div>
+                        <div class="recent-disciplina">Desenvolvimento Web</div>
+                    </div>
+                </div>
+                <div class="recent-item">
+                    <div class="recent-icon">📊</div>
+                    <div class="recent-info">
+                        <div class="recent-name">Casos de Uso - UML</div>
+                        <div class="recent-disciplina">Engenharia de Software</div>
+                    </div>
+                </div>
+                <div class="recent-item">
+                    <div class="recent-icon">💻</div>
+                    <div class="recent-info">
+                        <div class="recent-name">SQL Avançado</div>
+                        <div class="recent-disciplina">Banco de Dados</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Sistema Acadêmico - Turma 3° TDS &copy; 2024 - Professor Helcio Soares Padilha</p>
+    </footer>
+
+    <script>
+        function filtrarMateriais() {
+            const disciplinaFiltro = document.querySelector('.filter-select').value;
+            const tipoFiltro = document.querySelectorAll('.filter-select')[1].value;
+            const searchTerm = document.querySelector('.search-input').value.toLowerCase();
+            
+            const materiais = document.querySelectorAll('.material-card');
+            
+            materiais.forEach(material => {
+                const disciplina = material.querySelector('.material-disciplina').textContent;
+                const tipo = material.querySelector('.material-tipo').textContent.toLowerCase();
+                const nome = material.querySelector('h3').textContent.toLowerCase();
+                const descricao = material.querySelector('.material-descricao').textContent.toLowerCase();
+                
+                const matchDisciplina = !disciplinaFiltro || disciplina === disciplinaFiltro;
+                const matchTipo = !tipoFiltro || tipo.includes(tipoFiltro);
+                const matchSearch = !searchTerm || 
+                    nome.includes(searchTerm) || 
+                    descricao.includes(searchTerm) ||
+                    disciplina.toLowerCase().includes(searchTerm);
+                
+                if (matchDisciplina && matchTipo && matchSearch) {
+                    material.style.display = 'block';
+                } else {
+                    material.style.display = 'none';
+                }
+            });
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'index.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
+            if (!usuario) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.getElementById('studentInfo').textContent = 
+                `${usuario.nome} - ${usuario.matricula} - 3° TDS`;
+
+            // Adicionar evento de busca em tempo real
+            document.querySelector('.search-input').addEventListener('input', filtrarMateriais);
+        });
+    </script>
+</body>
+</html>

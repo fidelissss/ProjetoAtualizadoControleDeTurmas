@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Atividades - 3° TDS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 25px 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-content h1 {
+            margin: 0;
+            color: white;
+            font-size: 2.2em;
+        }
+
+        .header-content p {
+            margin: 8px 0 0 0;
+            color: #bdc3c7;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-logout {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .main-content {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .filters {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: end;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .actions {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .atividades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .atividade-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+
+        .atividade-card.atrasada {
+            border-left-color: #e74c3c;
+        }
+
+        .atividade-card.entregue {
+            border-left-color: #27ae60;
+        }
+
+        .atividade-card.pendente {
+            border-left-color: #f39c12;
+        }
+
+        .atividade-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .atividade-title {
+            flex: 1;
+        }
+
+        .atividade-title h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1.3em;
+        }
+
+        .atividade-disciplina {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .atividade-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .status-entregue {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pendente {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-atrasada {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .atividade-info {
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .info-label {
+            font-weight: 600;
+            min-width: 120px;
+            color: #2c3e50;
+        }
+
+        .atividade-descricao {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .atividade-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 10000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-weight: 500;
+            color: white;
+            background: #27ae60;
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                min-width: 100%;
+            }
+            
+            .atividades-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .atividade-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div>
+                <h1>📝 Minhas Atividades - 3° TDS</h1>
+                <p>Controle de tarefas e trabalhos acadêmicos</p>
+            </div>
+            <div>
+                <a href="index.html" class="btn btn-secondary">🏠 Início</a>
+                <button onclick="logout()" class="btn btn-logout">🚪 Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="filters">
+            <div class="filter-group">
+                <label for="status">Filtrar por Status:</label>
+                <select id="status">
+                    <option value="todos">Todas as Atividades</option>
+                    <option value="pendente">Pendentes</option>
+                    <option value="entregue">Entregues</option>
+                    <option value="atrasada">Atrasadas</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="disciplina">Filtrar por Disciplina:</label>
+                <select id="disciplina">
+                    <option value="todas">Todas as Disciplinas</option>
+                    <option value="TDS-301">Desenvolvimento Web</option>
+                    <option value="TDS-302">Banco de Dados</option>
+                    <option value="TDS-303">Programação Mobile</option>
+                    <option value="TDS-304">Redes de Computadores</option>
+                    <option value="TDS-305">Engenharia de Software</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button onclick="novaAtividade()" class="btn btn-primary">➕ Nova Atividade</button>
+            <button onclick="exportarAtividades()" class="btn btn-primary">📥 Exportar Lista</button>
+        </div>
+
+        <div class="atividades-grid" id="atividadesGrid">
+            <!-- Atividade 1 -->
+            <div class="atividade-card pendente">
+                <div class="atividade-header">
+                    <div class="atividade-title">
+                        <h3>Projeto Site E-commerce</h3>
+                        <div class="atividade-disciplina">TDS-301 - Desenvolvimento Web</div>
+                    </div>
+                    <span class="atividade-status status-pendente">Pendente</span>
+                </div>
+                <div class="atividade-info">
+                    <div class="info-item">
+                        <span class="info-label">📅 Entrega:</span>
+                        <span>15/12/2024</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">⏰ Faltam:</span>
+                        <span>15 dias</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">📊 Valor:</span>
+                        <span>10.0 pontos</span>
+                    </div>
+                </div>
+                <div class="atividade-descricao">
+                    Desenvolver um site completo de e-commerce utilizando HTML, CSS, JavaScript e integração com API. Deve conter: catálogo de produtos, carrinho de compras, checkout e área administrativa.
+                </div>
+                <div class="atividade-actions">
+                    <button class="btn btn-primary btn-small" onclick="entregarAtividade(1)">📤 Entregar</button>
+                    <button class="btn btn-secondary btn-small" onclick="detalhesAtividade(1)">👁️ Detalhes</button>
+                </div>
+            </div>
+
+            <!-- Atividade 2 -->
+            <div class="atividade-card entregue">
+                <div class="atividade-header">
+                    <div class="atividade-title">
+                        <h3>Modelagem Banco Biblioteca</h3>
+                        <div class="atividade-disciplina">TDS-302 - Banco de Dados</div>
+                    </div>
+                    <span class="atividade-status status-entregue">Entregue</span>
+                </div>
+                <div class="atividade-info">
+                    <div class="info-item">
+                        <span class="info-label">📅 Entrega:</span>
+                        <span>01/12/2024</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">✅ Entregue em:</span>
+                        <span>30/11/2024</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">🎯 Nota:</span>
+                        <span>9.5/10.0</span>
+                    </div>
+                </div>
+                <div class="atividade-descricao">
+                    Criar modelo conceitual, lógico e físico para sistema de biblioteca. Incluir: livros, autores, usuários, empréstimos, reservas e multas.
+                </div>
+                <div class="atividade-actions">
+                    <button class="btn btn-secondary btn-small" onclick="detalhesAtividade(2)">👁️ Detalhes</button>
+                    <button class="btn btn-secondary btn-small" onclick="baixarArquivo(2)">📥 Download</button>
+                </div>
+            </div>
+
+            <!-- Atividade 3 -->
+            <div class="atividade-card pendente">
+                <div class="atividade-header">
+                    <div class="atividade-title">
+                        <h3>App Calculadora React Native</h3>
+                        <div class="atividade-disciplina">TDS-303 - Programação Mobile</div>
+                    </div>
+                    <span class="atividade-status status-pendente">Pendente</span>
+                </div>
+                <div class="atividade-info">
+                    <div class="info-item">
+                        <span class="info-label">📅 Entrega:</span>
+                        <span>20/12/2024</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">⏰ Faltam:</span>
+                        <span>20 dias</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">📊 Valor:</span>
+                        <span>8.0 pontos</span>
+                    </div>
+                </div>
+                <div class="atividade-descricao">
+                    Desenvolver aplicativo de calculadora em React Native com operações básicas e científicas. Deve funcionar em Android e iOS.
+                </div>
+                <div class="atividade-actions">
+                    <button class="btn btn-primary btn-small" onclick="entregarAtividade(3)">📤 Entregar</button>
+                    <button class="btn btn-secondary btn-small" onclick="detalhesAtividade(3)">👁️ Detalhes</button>
+                </div>
+            </div>
+
+            <!-- Atividade 4 -->
+            <div class="atividade-card atrasada">
+                <div class="atividade-header">
+                    <div class="atividade-title">
+                        <h3>Relatório Topologia Rede</h3>
+                        <div class="atividade-disciplina">TDS-304 - Redes de Computadores</div>
+                    </div>
+                    <span class="atividade-status status-atrasada">Atrasada</span>
+                </div>
+                <div class="atividade-info">
+                    <div class="info-item">
+                        <span class="info-label">📅 Entrega:</span>
+                        <span>25/11/2024</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">⚠️ Atraso:</span>
+                        <span>5 dias</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">📊 Valor:</span>
+                        <span>7.0 pontos</span>
+                    </div>
+                </div>
+                <div class="atividade-descricao">
+                    Elaborar relatório comparativo entre topologias de rede: estrela, barramento, anel e malha. Incluir vantagens, desvantagens e cenários de uso.
+                </div>
+                <div class="atividade-actions">
+                    <button class="btn btn-primary btn-small" onclick="entregarAtividade(4)">📤 Entregar</button>
+                    <button class="btn btn-secondary btn-small" onclick="solicitarProrrogacao(4)">📅 Prorrogar</button>
+                </div>
+            </div>
+
+            <!-- Atividade 5 -->
+            <div class="atividade-card pendente">
+                <div class="atividade-header">
+                    <div class="atividade-title">
+                        <h3>Diagrama Casos de Uso</h3>
+                        <div class="atividade-disciplina">TDS-305 - Engenharia de Software</div>
+                    </div>
+                    <span class="atividade-status status-pendente">Pendente</span>
+                </div>
+                <div class="atividade-info">
+                    <div class="info-item">
+                        <span class="info-label">📅 Entrega:</span>
+                        <span>10/12/2024</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">⏰ Faltam:</span>
+                        <span>10 dias</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">📊 Valor:</span>
+                        <span>6.0 pontos</span>
+                    </div>
+                </div>
+                <div class="atividade-descricao">
+                    Criar diagrama de casos de uso para sistema de gestão acadêmica. Incluir atores, casos de uso e relacionamentos.
+                </div>
+                <div class="atividade-actions">
+                    <button class="btn btn-primary btn-small" onclick="entregarAtividade(5)">📤 Entregar</button>
+                    <button class="btn btn-secondary btn-small" onclick="detalhesAtividade(5)">👁️ Detalhes</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showAlert(message, type = 'success') {
+            const alertasExistentes = document.querySelectorAll('.alert');
+            alertasExistentes.forEach(alert => alert.remove());
+
+            const alert = document.createElement('div');
+            alert.className = `alert`;
+            alert.textContent = message;
+            alert.style.background = type === 'success' ? '#27ae60' : '#e74c3c';
+            
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 3000);
+        }
+
+        function filtrarAtividades() {
+            const statusFilter = document.getElementById('status').value;
+            const disciplinaFilter = document.getElementById('disciplina').value;
+            
+            const cards = document.querySelectorAll('.atividade-card');
+            
+            cards.forEach(card => {
+                const status = card.classList.contains('entregue') ? 'entregue' : 
+                             card.classList.contains('atrasada') ? 'atrasada' : 'pendente';
+                const disciplina = card.querySelector('.atividade-disciplina').textContent.split(' - ')[0];
+                
+                const matchStatus = statusFilter === 'todos' || status === statusFilter;
+                const matchDisciplina = disciplinaFilter === 'todas' || disciplina === disciplinaFilter;
+                
+                if (matchStatus && matchDisciplina) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function entregarAtividade(id) {
+            showAlert(`Atividade ${id} entregue com sucesso!`, 'success');
+            // Simular mudança de status
+            setTimeout(() => {
+                const card = document.querySelector(`.atividade-card:nth-child(${id})`);
+                card.classList.remove('pendente', 'atrasada');
+                card.classList.add('entregue');
+                card.querySelector('.atividade-status').textContent = 'Entregue';
+                card.querySelector('.atividade-status').className = 'atividade-status status-entregue';
+            }, 1000);
+        }
+
+        function detalhesAtividade(id) {
+            showAlert(`Abrindo detalhes da atividade ${id}...`, 'success');
+        }
+
+        function baixarArquivo(id) {
+            showAlert(`Iniciando download do arquivo ${id}...`, 'success');
+        }
+
+        function solicitarProrrogacao(id) {
+            if (confirm('Deseja solicitar prorrogação para esta atividade?')) {
+                showAlert('Solicitação de prorrogação enviada!', 'success');
+            }
+        }
+
+        function novaAtividade() {
+            showAlert('Abrindo formulário para nova atividade...', 'success');
+        }
+
+        function exportarAtividades() {
+            showAlert('Exportando lista de atividades...', 'success');
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'index.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const usuarioLogado = localStorage.getItem('usuarioLogado');
+            if (!usuarioLogado) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.getElementById('status').addEventListener('change', filtrarAtividades);
+            document.getElementById('disciplina').addEventListener('change', filtrarAtividades);
+        });
+    </script>
+</body>
+</html>

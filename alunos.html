@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alunos - 3° TDS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 25px 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-content h1 {
+            margin: 0;
+            color: white;
+            font-size: 2.2em;
+        }
+
+        .header-content p {
+            margin: 8px 0 0 0;
+            color: #bdc3c7;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-logout {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .main-content {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .filters {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: end;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .actions {
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px 8px;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+
+        .btn-action.edit:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-action.delete:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-align: center;
+            display: inline-block;
+            min-width: 80px;
+        }
+
+        .status.ativo { 
+            background: #d4edda; 
+            color: #155724; 
+        }
+
+        .status.inativo { 
+            background: #f8d7da; 
+            color: #721c24; 
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 10000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-weight: 500;
+            color: white;
+            background: #27ae60;
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                min-width: 100%;
+            }
+            
+            .actions-cell {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div>
+                <h1>🎓 Alunos - 3° TDS</h1>
+                <p>7 alunos da turma matutina - Professor Helcio Soares Padilha</p>
+            </div>
+            <div>
+                <a href="index.html" class="btn btn-secondary">🏠 Início</a>
+                <button onclick="logout()" class="btn btn-logout">🚪 Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="filters">
+            <div class="filter-group">
+                <label for="search">Buscar aluno:</label>
+                <input type="text" id="search" placeholder="Digite nome ou matrícula...">
+            </div>
+            <div class="filter-group">
+                <label for="status">Filtrar por status:</label>
+                <select id="status">
+                    <option value="">Todos os status</option>
+                    <option value="Ativo">Ativo</option>
+                    <option value="Inativo">Inativo</option>
+                </select>
+            </div>
+            <button onclick="limparFiltros()" class="btn btn-secondary">🔄 Limpar Filtros</button>
+        </div>
+
+        <div class="actions">
+            <a href="aluno-form.html" class="btn btn-primary">➕ Novo Aluno</a>
+        </div>
+
+        <div class="table-container">
+            <table id="tabelaAlunos">
+                <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Nome Completo</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>20243001</strong></td>
+                        <td>Anna Julia de Lima</td>
+                        <td><span class="status ativo">Ativo</span></td>
+                        <td class="actions-cell">
+                            <a href="aluno-form.html?id=1" class="btn-action edit" title="Editar">✏️</a>
+                            <button onclick="excluirAluno(1)" class="btn-action delete" title="Excluir">🗑️</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>20243002</strong></td>
+                        <td>Adrian Rodrigo</td>
+                        <td><span class="status ativo">Ativo</span></td>
+                        <td class="actions-cell">
+                            <a href="aluno-form.html?id=2" class="btn-action edit" title="Editar">✏️</a>
+                            <button onclick="excluirAluno(2)" class="btn-action delete" title="Excluir">🗑️</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>20243003</strong></td>
+                        <td>Hygor Meireles</td>
+                        <td><span class="status ativo">Ativo</span></td>
+                        <td class="actions-cell">
+                            <a href="aluno-form.html?id=3" class="btn-action edit" title="Editar">✏️</a>
+                            <button onclick="excluirAluno(3)" class="btn-action delete" title="Excluir">🗑️</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>20243004</strong></td>
+                        <td>Pedro Henrique Camargo</td>
+                        <td><span class="status ativo">Ativo</span></td>
+                        <td class="actions-cell">
+                            <a href="aluno-form.html?id=4" class="btn-action edit" title="Editar">✏️</a>
+                            <button onclick="excluirAluno(4)" class="btn-action delete" title="Excluir">🗑️</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>20243005</strong></td>
+                        <td>Emilly Vieira</td>
+                        <td><span class="status ativo">Ativo</span></td>
+                        <td class="actions-cell">
+                            <a href="aluno-form.html?id=5" class="btn-action edit" title="Editar">✏️</a>
+                            <button onclick="excluirAluno(5)" class="btn-action delete" title="Excluir">🗑️</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>20243006</strong></td>
+                        <td>Thiago Tavares</td>
+                        <td><span class="status ativo">Ativo</span></td>
+                        <td class="actions-cell">
+                            <a href="aluno-form.html?id=6" class="btn-action edit" title="Editar">✏️</a>
+                            <button onclick="excluirAluno(6)" class="btn-action delete" title="Excluir">🗑️</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>20243007</strong></td>
+                        <td>Vinicius Fidelis</td>
+                        <td><span class="status ativo">Ativo</span></td>
+                        <td class="actions-cell">
+                            <a href="aluno-form.html?id=7" class="btn-action edit" title="Editar">✏️</a>
+                            <button onclick="excluirAluno(7)" class="btn-action delete" title="Excluir">🗑️</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        function showAlert(message, type = 'success') {
+            const alertasExistentes = document.querySelectorAll('.alert');
+            alertasExistentes.forEach(alert => alert.remove());
+
+            const alert = document.createElement('div');
+            alert.className = `alert`;
+            alert.textContent = message;
+            alert.style.background = type === 'success' ? '#27ae60' : '#e74c3c';
+            
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 3000);
+        }
+
+        function excluirAluno(id) {
+            if (confirm('Tem certeza que deseja excluir este aluno?')) {
+                showAlert('Aluno excluído com sucesso!', 'success');
+            }
+        }
+
+        function limparFiltros() {
+            document.getElementById('search').value = '';
+            document.getElementById('status').value = '';
+            filtrarAlunos();
+            showAlert('Filtros limpos!', 'success');
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'index.html';
+            }
+        }
+
+        function filtrarAlunos() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const statusFilter = document.getElementById('status').value;
+            
+            const linhas = document.querySelectorAll('#tabelaAlunos tbody tr');
+            let encontrouResultados = false;
+            
+            linhas.forEach(linha => {
+                const nome = linha.cells[1].textContent.toLowerCase();
+                const matricula = linha.cells[0].textContent.toLowerCase();
+                const status = linha.cells[2].querySelector('.status').textContent;
+                
+                const matchSearch = nome.includes(searchTerm) || matricula.includes(searchTerm);
+                const matchStatus = !statusFilter || status === statusFilter;
+                
+                if (matchSearch && matchStatus) {
+                    linha.style.display = '';
+                    encontrouResultados = true;
+                } else {
+                    linha.style.display = 'none';
+                }
+            });
+
+            // Mostrar mensagem se não encontrar resultados
+            const mensagemVazia = document.getElementById('mensagemVazia');
+            if (!encontrouResultados) {
+                if (!mensagemVazia) {
+                    const mensagem = document.createElement('tr');
+                    mensagem.id = 'mensagemVazia';
+                    mensagem.innerHTML = `
+                        <td colspan="4" style="text-align: center; padding: 40px; color: #7f8c8d;">
+                            📭 Nenhum aluno encontrado com os filtros atuais
+                        </td>
+                    `;
+                    document.querySelector('#tabelaAlunos tbody').appendChild(mensagem);
+                }
+            } else if (mensagemVazia) {
+                mensagemVazia.remove();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const usuarioLogado = localStorage.getItem('usuarioLogado');
+            if (!usuarioLogado) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.getElementById('search').addEventListener('input', filtrarAlunos);
+            document.getElementById('status').addEventListener('change', filtrarAlunos);
+        });
+    </script>
+</body>
+</html>

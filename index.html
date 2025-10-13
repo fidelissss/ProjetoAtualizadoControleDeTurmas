@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Turmas</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="TurmasApp">
+    <link rel="apple-touch-icon" href="/ControleDeTurmas/icon-192.png">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="/ControleDeTurmas/manifest.webmanifest">
+    
+    <link rel="stylesheet" href="/ControleDeTurmas/styles.css">
+</head>
+<body>
+    
+
+   <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="TurmasApp">
+    <link rel="apple-touch-icon" href="/ControleDeTurmas/icon-192.png">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="/ControleDeTurmas/manifest.webmanifest">
+    
+    <link rel="stylesheet" href="/ControleDeTurmas/styles.css">
+</head>
+    
+    <title>Sistema Acadêmico - 3° TDS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            display: flex;
+            gap: 30px;
+            max-width: 900px;
+            width: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-card.professor {
+            border-top: 5px solid #3498db;
+        }
+
+        .login-card.aluno {
+            border-top: 5px solid #0059ff;
+        }
+
+        .login-header {
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .login-header h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.6em;
+        }
+
+        .login-header p {
+            color: #7f8c8d;
+            font-size: 1em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn-professor {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn-professor:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-aluno {
+            background: #09ff00;
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn-aluno:hover {
+            background: #00b7ff;
+            transform: translateY(-2px);
+        }
+
+        .login-footer {
+            margin-top: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.85em;
+            color: #6c757d;
+        }
+
+        .login-footer p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .credential-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin: 2px;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 10000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-weight: 500;
+            color: white;
+        }
+
+        .alert-success {
+            background: #27ae60;
+        }
+
+        .alert-error {
+            background: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .login-card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Login Professor -->
+        <div class="login-card professor">
+            <div class="login-header">
+                <h1>👨‍🏫</h1>
+                <h2>Área do Professor</h2>
+                <p>Professor Helcio Soares Padilha</p>
+            </div>
+
+            <form id="loginProfessorForm">
+                <div class="form-group">
+                    <label for="professorEmail">Email:</label>
+                    <input type="email" id="professorEmail" required value="helcio.padilha@escola.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="professorSenha">Senha:</label>
+                    <input type="password" id="professorSenha" required value="123456">
+                </div>
+
+                <button type="button" onclick="fazerLogin('professor')" class="btn btn-professor">🚀 Entrar como Professor</button>
+            </form>
+
+            <div class="login-footer">
+                <p><strong>Credenciais de Acesso:</strong></p>
+                <p>Email: <span class="credential-badge">helcio.padilha@escola.com</span></p>
+                <p>Senha: <span class="credential-badge">123456</span></p>
+            </div>
+        </div>
+
+        <!-- Login Aluno -->
+        <div class="login-card aluno">
+            <div class="login-header">
+                <h1>🎓</h1>
+                <h2>Área do Aluno</h2>
+                <p>Turma 3° TDS - Matutino</p>
+            </div>
+
+            <form id="loginAlunoForm">
+                <div class="form-group">
+                    <label for="alunoMatricula">Matrícula:</label>
+                    <input type="text" id="alunoMatricula" required placeholder="Digite sua matrícula">
+                </div>
+
+                <div class="form-group">
+                    <label for="alunoSenha">Senha:</label>
+                    <input type="password" id="alunoSenha" required value="123456">
+                </div>
+
+                <button type="button" onclick="fazerLogin('aluno')" class="btn btn-aluno">🎒 Entrar como Aluno</button>
+            </form>
+
+            <div class="login-footer">
+                <p><strong>Credenciais de Teste:</strong></p>
+                <p>Matrícula: <span class="credential-badge">20243001</span> à <span class="credential-badge">20243007</span></p>
+                <p>Senha: <span class="credential-badge">123456</span> para todos</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados de usuários
+        const USUARIOS = {
+            professor: [
+                { 
+                    id: 1, 
+                    email: 'helcio.padilha@escola.com', 
+                    senha: '123456', 
+                    nome: 'Helcio Soares Padilha', 
+                    tipo: 'professor',
+                    turma: '3° TDS'
+                }
+            ],
+            alunos: [
+                { id: 1, matricula: '20243001', senha: '123456', nome: 'Anna Julia de Lima', tipo: 'aluno', turma: '3° TDS' },
+                { id: 2, matricula: '20243002', senha: '123456', nome: 'Adrian Rodrigo', tipo: 'aluno', turma: '3° TDS' },
+                { id: 3, matricula: '20243003', senha: '123456', nome: 'Hygor Meireles', tipo: 'aluno', turma: '3° TDS' },
+                { id: 4, matricula: '20243004', senha: '123456', nome: 'Pedro Henrique Camargo', tipo: 'aluno', turma: '3° TDS' },
+                { id: 5, matricula: '20243005', senha: '123456', nome: 'Emilly Vieira', tipo: 'aluno', turma: '3° TDS' },
+                { id: 6, matricula: '20243006', senha: '123456', nome: 'Thiago Tavares', tipo: 'aluno', turma: '3° TDS' },
+                { id: 7, matricula: '20243007', senha: '123456', nome: 'Vinicius Fidelis', tipo: 'aluno', turma: '3° TDS' }
+            ]
+        };
+
+        // Função para mostrar alertas
+        function showAlert(message, type = 'success') {
+            const alertasExistentes = document.querySelectorAll('.alert');
+            alertasExistentes.forEach(alert => alert.remove());
+
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.background = type === 'success' ? '#27ae60' : '#e74c3c';
+            
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 3000);
+        }
+
+        // Função principal de login
+        function fazerLogin(tipo) {
+            if (tipo === 'professor') {
+                const email = document.getElementById('professorEmail').value;
+                const senha = document.getElementById('professorSenha').value;
+
+                const usuario = USUARIOS.professor.find(u => u.email === email && u.senha === senha);
+                
+                if (usuario) {
+                    localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+                    showAlert(`Bem-vindo, Professor ${usuario.nome}!`, 'success');
+                    setTimeout(() => {
+                        window.location.href = 'professor-dashboard.html';
+                    }, 1000);
+                } else {
+                    showAlert('Email ou senha do professor incorretos!', 'error');
+                }
+            } else if (tipo === 'aluno') {
+                const matricula = document.getElementById('alunoMatricula').value;
+                const senha = document.getElementById('alunoSenha').value;
+
+                const usuario = USUARIOS.alunos.find(u => u.matricula === matricula && u.senha === senha);
+                
+                if (usuario) {
+                    localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+                    showAlert(`Bem-vindo, ${usuario.nome}!`, 'success');
+                    setTimeout(() => {
+                        window.location.href = 'aluno-dashboard.html';
+                    }, 1000);
+                } else {
+                    showAlert('Matrícula ou senha do aluno incorretos!', 'error');
+                }
+            }
+        }
+
+        // Permitir Enter para fazer login
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('professorSenha').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    fazerLogin('professor');
+                }
+            });
+
+            document.getElementById('alunoSenha').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    fazerLogin('aluno');
+                }
+            });
+
+            // Preencher matrículas de exemplo no placeholder
+            document.getElementById('alunoMatricula').placeholder = 'Ex: 20243001';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Área - Controle de Turmas</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div>
+                    <h1>👤 Minha Área</h1>
+                    <p>Meus dados e informações do sistema</p>
+                </div>
+                <div>
+                    <a href="index.html" class="btn btn-secondary">🏠 Início</a>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="profile-container">
+                <!-- Informações do Usuário -->
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="avatar">👨‍🏫</div>
+                        <h2 id="userName">Carregando...</h2>
+                        <p id="userEmail" class="text-muted">Carregando...</p>
+                    </div>
+
+                    <div class="profile-info">
+                        <div class="info-item">
+                            <label>👤 Tipo de Usuário:</label>
+                            <span id="userType">Carregando...</span>
+                        </div>
+                        <div class="info-item">
+                            <label>📅 Último Acesso:</label>
+                            <span id="lastAccess">Carregando...</span>
+                        </div>
+                        <div class="info-item">
+                            <label>🆔 ID do Usuário:</label>
+                            <span id="userId">Carregando...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estatísticas -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3 id="totalTurmas">0</h3>
+                            <p>Turmas Ativas</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">🎓</div>
+                        <div class="stat-info">
+                            <h3 id="totalAlunos">0</h3>
+                            <p>Alunos Cadastrados</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">📖</div>
+                        <div class="stat-info">
+                            <h3 id="totalDisciplinas">0</h3>
+                            <p>Disciplinas</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <h3 id="totalAtivos">0</h3>
+                            <p>Registros Ativos</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ações Rápidas -->
+                <div class="quick-actions">
+                    <h3>⚡ Ações Rápidas</h3>
+                    <div class="actions-grid">
+                        <a href="turmas.html" class="action-btn">
+                            <span class="action-icon">👥</span>
+                            <span>Ver Turmas</span>
+                        </a>
+                        <a href="alunos.html" class="action-btn">
+                            <span class="action-icon">🎓</span>
+                            <span>Ver Alunos</span>
+                        </a>
+                        <a href="disciplinas.html" class="action-btn">
+                            <span class="action-icon">📖</span>
+                            <span>Ver Disciplinas</span>
+                        </a>
+                        <a href="turma-form.html" class="action-btn">
+                            <span class="action-icon">➕</span>
+                            <span>Nova Turma</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        function carregarDadosUsuario() {
+            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            
+            if (!usuarioLogado) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Informações do usuário
+            document.getElementById('userName').textContent = usuarioLogado.nome;
+            document.getElementById('userEmail').textContent = usuarioLogado.email;
+            document.getElementById('userType').textContent = usuarioLogado.tipo === 'professor' ? 'Professor' : 'Administrador';
+            document.getElementById('userId').textContent = `#${usuarioLogado.id.toString().padStart(3, '0')}`;
+            document.getElementById('lastAccess').textContent = new Date().toLocaleString('pt-BR');
+
+            // Estatísticas
+            const turmas = turmaService.getAll();
+            const alunos = alunoService.getAll();
+            const disciplinas = disciplinaService.getAll();
+
+            const turmasAtivas = turmas.filter(t => t.status === 'Ativa').length;
+            const alunosAtivos = alunos.filter(a => a.status === 'Ativo').length;
+            const disciplinasAtivas = disciplinas.filter(d => d.status === 'Ativa').length;
+            const totalAtivos = turmasAtivas + alunosAtivos + disciplinasAtivas;
+
+            document.getElementById('totalTurmas').textContent = turmasAtivas;
+            document.getElementById('totalAlunos').textContent = alunosAtivos;
+            document.getElementById('totalDisciplinas').textContent = disciplinasAtivas;
+            document.getElementById('totalAtivos').textContent = totalAtivos;
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarDadosUsuario);
+    </script>
+
+    <style>
+        .container {
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+
+        .main-content {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .avatar {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .profile-header h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .text-muted {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .profile-info {
+            display: grid;
+            gap: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #ecf0f1;
+            align-items: center;
+        }
+
+        .info-item label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1em;
+        }
+
+        .info-item span {
+            color: #34495e;
+            font-weight: 500;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 3em;
+            opacity: 0.8;
+        }
+
+        .stat-info h3 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .stat-info p {
+            color: #7f8c8d;
+            margin: 5px 0 0 0;
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        .quick-actions {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .quick-actions h3 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px 20px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+            border-color: #667eea;
+        }
+
+        .action-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .action-btn span:last-child {
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        @media (max-width: 768px) {
+            .profile-card {
+                padding: 30px 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+    </style>
+</body>
+</html>
