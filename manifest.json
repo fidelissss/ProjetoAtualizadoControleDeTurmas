@@ -2,7 +2,7 @@
     "name": "Controle de Turmas 3° TDS",
     "short_name": "TurmasApp",
     "description": "Sistema de controle de turmas",
-    "start_url": "/ControleDeTurmas/",
+    "start_url": "/ControleDeTurmas3°TDS/",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#667eea",
