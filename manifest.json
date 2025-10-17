@@ -1,6 +1,6 @@
 {
     "name": "Controle de Turmas 3° TDS",
-    "short_name": "TurmasApp",
+    "short_name": "ControleTurmasApp",
     "description": "Sistema de controle de turmas",
     "start_url": "/ControleDeTurmas3°TDS/",
     "display": "standalone",
